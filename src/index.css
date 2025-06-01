@@ -11,3 +11,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+/*
+  The following Tailwind directives require your build process to use Tailwind CSS (e.g., via PostCSS).
+  If you see "Unknown at rule @tailwind", make sure Tailwind is set up in your build pipeline.
+*/
