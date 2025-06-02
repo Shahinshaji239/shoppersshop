@@ -53,7 +53,18 @@ body {
 .login-screen {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.85);
+  background: linear-gradient(
+    45deg,
+    #cf3939,
+    #a54e4e,
+    #a3a046,
+    #290101,
+    #af1010
+  );
+  
+
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite, fadeIn 0.5s ease-out;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,112 +72,186 @@ body {
   padding: 20px;
 }
 
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .login-dialog {
-  background-color: #3b404e;
+  background: rgba(59, 64, 78, 0.95);
   padding: 30px 40px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   text-align: center;
   width: 100%;
   max-width: 400px;
   border-top: 4px solid var(--primary-color);
+  animation: slideUp 0.5s ease-out;
+  backdrop-filter: blur(10px);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-dialog::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.03),
+    transparent
+  );
+  transform: rotate(45deg);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
 }
 
 .login-dialog__icon-container {
   margin-bottom: 20px;
+  animation: pulse 2.5s infinite ease-in-out;
 }
 
 .login-dialog__icon {
-  width: 50px;
-  height: 50px;
-  color: var(--secondary-color);
+  width: 60px;
+  height: 60px;
+  filter: drop-shadow(0 0 10px var(--secondary-color));
+  color: #fff;
 }
 
 .login-dialog__title {
-  color: var(--text-color-light);
-  font-size: 1.8em;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.9em;
+  color: #fff;
+  letter-spacing: 2px;
   margin-bottom: 25px;
-  letter-spacing: 1px;
 }
 
 .login-dialog__password-dots {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 25px;
 }
 
 .login-dialog__dot {
-  width: 35px;
-  height: 35px;
-  border: 2px solid #6c757d;
+  width: 36px;
+  height: 36px;
+  border: 2px solid #aaa;
   border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--secondary-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5em;
-  color: var(--secondary-color);
-  background-color: rgba(255, 255, 255, 0.05);
-  transition: background-color 0.2s, border-color 0.2s;
+  font-size: 1.4em;
+  transition: all 0.3s ease;
 }
 
 .login-dialog__dot.filled {
   background-color: var(--secondary-color);
-  border-color: var(--secondary-color);
   color: var(--dark-bg);
+  box-shadow: 0 0 15px rgba(241, 196, 15, 0.6);
+  transform: scale(1.1);
 }
 
 .login-dialog__input {
   width: 100%;
-  padding: 12px 15px;
-  margin-bottom: 15px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid #6c757d;
+  padding: 12px;
+  font-size: 1em;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--border-radius);
-  color: var(--text-color-light);
-  font-size: 1.1em;
+  color: #fff;
   text-align: center;
   letter-spacing: 0.3em;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
 }
 
 .login-dialog__input::placeholder {
-  color: #adb5bd;
-  letter-spacing: normal;
+  color: #bbb;
 }
 
 .login-dialog__input:focus {
   outline: none;
   border-color: var(--secondary-color);
-  box-shadow: 0 0 0 3px rgba(var(--secondary-color), 0.3);
-}
-
-.login-dialog__error {
-  color: #e74c3c;
-  margin-top: -10px;
-  margin-bottom: 15px;
-  font-size: 0.9em;
+  box-shadow: 0 0 8px var(--secondary-color);
+  transform: translateY(-2px);
 }
 
 .login-dialog__button {
-  width: 100%;
-  padding: 12px 20px;
-  background-color: var(--secondary-color);
-  color: var(--dark-bg);
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--secondary-color), #f39c12);
+  color: #fff;
   border: none;
   border-radius: var(--border-radius);
-  font-size: 1.1em;
   font-weight: bold;
+  font-size: 1em;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .login-dialog__button:hover {
-  background-color: #d4ac0d;
+  box-shadow: 0 6px 20px rgba(241, 196, 15, 0.4);
+  transform: translateY(-2px);
 }
 
 .login-dialog__button:active {
-  transform: scale(0.98);
+  transform: translateY(1px);
+}
+
+.login-dialog__button::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.login-dialog__button:hover::after {
+  left: 100%;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 /* --- Cover Pages Specific --- */
@@ -213,7 +298,7 @@ body {
 
 .nav-button {
   background-color: var(--primary-color);
-  color: var(--text-color-light);
+  color: #bbb;
   border: none;
   padding: 10px 20px;
   border-radius: var(--border-radius);
@@ -236,7 +321,7 @@ body {
 .page-indicator {
   font-size: 1em;
   font-weight: 500;
-  color: var(--light-bg);
+  color: #bbb;
 }
 
 .mobile-tip {
@@ -294,6 +379,9 @@ body {
   object-position: center; /* Center the image */
   display: block;
   border-radius: 0; /* Remove if you want clean edge-to-edge look */
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .page__text-content {
@@ -323,12 +411,14 @@ body {
 /* --- Final Popup --- */
 .popup-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  animation: fadeIn 0.3s ease-out;
+  padding: 20px;
 }
 
 .popup-dialog {
@@ -337,8 +427,13 @@ body {
   padding: 2rem;
   max-width: 90vw;
   width: 400px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   text-align: center;
+  animation: slideUp 0.3s ease-out;
+  position: relative;
+  z-index: 10000;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .popup-dialog__title {
@@ -405,6 +500,14 @@ body {
   background-color: #95a5a6;
 }
 
+.login-dialog__hint {
+  color: #bdc3c7;
+  font-size: 0.9em;
+  margin: -10px 0 15px 0;
+  font-style: italic;
+  opacity: 0.8;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
 
 /* --- Responsive Styles --- */
 @media (max-width: 768px) {
@@ -511,4 +614,32 @@ body {
     width: 95vw;
     padding: 1rem;
   }
+}
+
+/* Loading Screen */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(45deg, #2c3e50, #34495e);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid var(--secondary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

@@ -9,7 +9,7 @@ const LoginScreen = ({ onLogin }) => {
   const [isShaking, setIsShaking] = useState(false);
 
   const handleSubmit = () => {
-    if (password === "5212") {
+    if (password.toLowerCase() === "ssale") {
       onLogin();
     } else {
       setError("Incorrect password. Try again.");
@@ -35,7 +35,7 @@ const LoginScreen = ({ onLogin }) => {
         </div>
         <h2 className="login-dialog__title">TYPE PASSWORD</h2>
         <div className="login-dialog__password-dots">
-          {[0, 1, 2, 3].map((index) => (
+          {[0, 1, 2, 3, 4].map((index) => (
             <div
               key={index}
               className={`login-dialog__dot ${password[index] ? "filled" : ""}`}
@@ -48,16 +48,17 @@ const LoginScreen = ({ onLogin }) => {
           type="password"
           value={password}
           onChange={(e) => {
-            setPassword(e.target.value.slice(0, 4));
+            setPassword(e.target.value.slice(0, 5));
             setError("");
           }}
           onKeyPress={handleKeyPress}
           className="login-dialog__input"
-          placeholder="Enter 4-digit password"
-          maxLength="4"
+          placeholder="Enter 5-digit password"
+          maxLength="5"
           autoFocus
-          aria-label="4-digit password input"
+          aria-label="5-digit password input"
         />
+        <p className="login-dialog__hint">Hint: SSALE</p>
         {error && (
           <p className="login-dialog__error">{error}</p>
         )}
@@ -148,6 +149,7 @@ export default function Index() {
   const [isMobile, setIsMobile] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [isBookOpen, setIsBookOpen] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
   const flipBookRef = useRef();
 
   useEffect(() => {
@@ -173,6 +175,30 @@ export default function Index() {
     };
   }, [isMobile]);
 
+  // Preload images
+  useEffect(() => {
+    const preloadImages = async () => {
+      const imagePromises = pages.map((src) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = src;
+          img.onload = resolve;
+          img.onerror = reject;
+        });
+      });
+
+      try {
+        await Promise.all(imagePromises);
+        setImagesLoaded(true);
+        console.log('All images loaded successfully');
+      } catch (error) {
+        console.error('Error loading images:', error);
+      }
+    };
+
+    preloadImages();
+  }, []);
+
   const pages = [
     "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_2.jpg?updatedAt=1748805643144",
     "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_3.jpg?updatedAt=1748805657984",
@@ -187,6 +213,7 @@ export default function Index() {
   ];
 
   const totalBookPages = pages.length + 1;
+  console.log('Total book pages:', totalBookPages);
 
   const handleSuccessfulLogin = () => {
     console.log("DEBUG: Login successful. Setting book to initial closed state.");
@@ -206,14 +233,23 @@ export default function Index() {
   };
 
   const handleFlip = (e) => {
-    setCurrentPage(e.data);
-    if (e.data > 0 && !isBookOpen) {
+    const newPage = e.data;
+    setCurrentPage(newPage);
+  
+    if (newPage > 0 && !isBookOpen) {
       setIsBookOpen(true);
     }
-    if (e.data === totalBookPages - 1) {
-      setTimeout(() => setShowFinalPopup(true), 500);
+
+    // Show modal after back cover
+   // Trigger modal when last visible page (back cover) is reached
+  if (newPage >= totalBookPages - 2) {
+    // Only show once
+    if (!showFinalPopup) {
+      console.log('Reached back cover, showing modal');
+      setTimeout(() => setShowFinalPopup(true), 500); // Shorter delay for better UX
     }
-  };
+  }
+};
 
   const handleOpenBook = () => {
     if (!isBookOpen && flipBookRef.current && flipBookRef.current.pageFlip()) {
@@ -227,6 +263,15 @@ export default function Index() {
 
   if (!isLoggedIn) {
     return <LoginScreen onLogin={handleSuccessfulLogin} />;
+  }
+
+  if (!imagesLoaded) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-spinner"></div>
+        <p>Loading your exclusive content...</p>
+      </div>
+    );
   }
 
   console.log(`DEBUG: App render. isMobile: ${isMobile}, isBookOpen: ${isBookOpen}, currentPage: ${currentPage}`);
