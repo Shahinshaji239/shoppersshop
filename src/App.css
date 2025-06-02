@@ -323,24 +323,22 @@ body {
 /* --- Final Popup --- */
 .popup-overlay {
   position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  padding: 20px;
+  z-index: 9999;
 }
 
 .popup-dialog {
-  background-color: #ffffff;
-  color: var(--text-color-dark);
-  padding: 30px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 90vw;
+  width: 400px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
   text-align: center;
-  width: 100%;
-  max-width: 450px;
 }
 
 .popup-dialog__title {
@@ -506,4 +504,11 @@ body {
 }
 .flipbook-wrapper.closed-book-clickable {
   cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .popup-dialog {
+    width: 95vw;
+    padding: 1rem;
+  }
 }

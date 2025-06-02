@@ -206,32 +206,22 @@ export default function Index() {
   };
 
   const handleFlip = (e) => {
-    console.log(`DEBUG: Page flipped. New page: ${e.data}. isMobile: ${isMobile}`);
     setCurrentPage(e.data);
-
     if (e.data > 0 && !isBookOpen) {
       setIsBookOpen(true);
-      console.log("DEBUG: Book now considered open as it's past the cover.");
     }
-
-    if (e.data >= totalBookPages - 1) {
-      console.log("DEBUG: Reached last page, scheduling final popup.");
-      setTimeout(() => setShowFinalPopup(true), 1000);
+    if (e.data === totalBookPages - 1) {
+      setTimeout(() => setShowFinalPopup(true), 500);
     }
   };
 
   const handleOpenBook = () => {
     if (!isBookOpen && flipBookRef.current && flipBookRef.current.pageFlip()) {
       const currentBookPageIdx = flipBookRef.current.pageFlip().getCurrentPageIndex();
-      console.log(`DEBUG: handleOpenBook called. Current book page index: ${currentBookPageIdx}. isBookOpen: ${isBookOpen}`);
-
       if (currentBookPageIdx === 0) {
         flipBookRef.current.pageFlip().flipNext();
         setIsBookOpen(true);
-        console.log("DEBUG: Book explicitly opened via handleOpenBook. isBookOpen set to true.");
       }
-    } else {
-      console.log("DEBUG: handleOpenBook conditions not met (already open or ref issue).");
     }
   };
 
@@ -276,8 +266,8 @@ export default function Index() {
           swipeDistance={isMobile ? 20 : 50}
           usePortrait={isMobile}
           startPage={0}
-          drawShadow={!isMobile}
-          flippingTime={600}
+          drawShadow={true}
+          flippingTime={1000}
           useMouseEvents={true}
           autoSize={false}
           showPageCorners={!isMobile}
