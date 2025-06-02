@@ -1,16 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import HTMLFlipBook from "react-pageflip";
-import './App.css'; // Make sure this is imported
+import './App.css';
 
-
-// Login Component (from your code)
+// Login Component
 const LoginScreen = ({ onLogin }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isShaking, setIsShaking] = useState(false);
 
   const handleSubmit = () => {
-    if (password === "5212") { // Your password
+    if (password === "5212") {
       onLogin();
     } else {
       setError("Incorrect password. Try again.");
@@ -74,7 +73,7 @@ const LoginScreen = ({ onLogin }) => {
   );
 };
 
-// Final Popup Component (from your code)
+// Final Popup Component
 const FinalPopup = ({ onClose }) => {
   return (
     <div className="popup-overlay">
@@ -106,16 +105,19 @@ const FinalPopup = ({ onClose }) => {
   );
 };
 
-// Page Components (from your code)
-const PageCover = React.forwardRef(({ title, subtitle, className = '' }, ref) => (
-  <div className={`page page-cover ${className}`} ref={ref} data-density="hard">
+// Page Components
+const PageCover = React.forwardRef(({ title, subtitle, className = '', backgroundImage }, ref) => (
+  <div
+    className={`page page-cover ${className}`}
+    ref={ref}
+    data-density="hard"
+    style={backgroundImage ? { backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+  >
     <div className="page-content page-cover__content">
-
+      {/* Optionally add title/subtitle here */}
     </div>
   </div>
 ));
-
-
 
 const Page = React.forwardRef((props, ref) => {
   return (
@@ -126,6 +128,7 @@ const Page = React.forwardRef((props, ref) => {
             src={props.image}
             alt={`Page ${props.number + 1}`}
             className="page__image"
+            draggable="false"
           />
         ) : (
           <div className="page__text-content">
@@ -139,12 +142,12 @@ const Page = React.forwardRef((props, ref) => {
   );
 });
 
-export default function App() {
+export default function Index() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showFinalPopup, setShowFinalPopup] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const [isBookOpen, setIsBookOpen] = useState(false); // True if user has "opened" the book from cover
+  const [isBookOpen, setIsBookOpen] = useState(false);
   const flipBookRef = useRef();
 
   useEffect(() => {
@@ -156,11 +159,13 @@ export default function App() {
       }
     };
     checkMobile();
-    let resizeTimeout; // Using your resize handler logic
+
+    let resizeTimeout;
     const handleResize = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(checkMobile, 150);
     };
+
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -180,14 +185,15 @@ export default function App() {
     "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_10.jpg?updatedAt=1748805938947",
     "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_11.jpg?updatedAt=1748805952057",
   ];
+
   const totalBookPages = pages.length + 1;
 
   const handleSuccessfulLogin = () => {
     console.log("DEBUG: Login successful. Setting book to initial closed state.");
     setIsLoggedIn(true);
-    setIsBookOpen(false); // Mark book as "closed" (user hasn't initiated open action)
-    setCurrentPage(0);    // Active page is cover
-    setShowFinalPopup(false); // Ensure final popup is hidden
+    setIsBookOpen(false);
+    setCurrentPage(0);
+    setShowFinalPopup(false);
 
     if (flipBookRef.current && flipBookRef.current.pageFlip()) {
       setTimeout(() => {
@@ -195,20 +201,22 @@ export default function App() {
           console.log("DEBUG: Forcing flipbook to page 0 after login.");
           flipBookRef.current.pageFlip().turnToPage(0);
         }
-      }, 0);
+      }, 100);
     }
   };
 
   const handleFlip = (e) => {
     console.log(`DEBUG: Page flipped. New page: ${e.data}. isMobile: ${isMobile}`);
     setCurrentPage(e.data);
-    if (e.data > 0 && !isBookOpen) { // If flipped past cover page
-      setIsBookOpen(true); // Mark book as "opened" by user interaction
+
+    if (e.data > 0 && !isBookOpen) {
+      setIsBookOpen(true);
       console.log("DEBUG: Book now considered open as it's past the cover.");
     }
+
     if (e.data >= totalBookPages - 1) {
       console.log("DEBUG: Reached last page, scheduling final popup.");
-      setTimeout(() => setShowFinalPopup(true), 1000); // Your specified timeout
+      setTimeout(() => setShowFinalPopup(true), 1000);
     }
   };
 
@@ -216,9 +224,10 @@ export default function App() {
     if (!isBookOpen && flipBookRef.current && flipBookRef.current.pageFlip()) {
       const currentBookPageIdx = flipBookRef.current.pageFlip().getCurrentPageIndex();
       console.log(`DEBUG: handleOpenBook called. Current book page index: ${currentBookPageIdx}. isBookOpen: ${isBookOpen}`);
-      if (currentBookPageIdx === 0) { // Only "open" if currently on the cover
+
+      if (currentBookPageIdx === 0) {
         flipBookRef.current.pageFlip().flipNext();
-        setIsBookOpen(true); // Mark that user has now initiated the "open" action
+        setIsBookOpen(true);
         console.log("DEBUG: Book explicitly opened via handleOpenBook. isBookOpen set to true.");
       }
     } else {
@@ -231,6 +240,7 @@ export default function App() {
   }
 
   console.log(`DEBUG: App render. isMobile: ${isMobile}, isBookOpen: ${isBookOpen}, currentPage: ${currentPage}`);
+
   return (
     <div className="app-container">
       <div
@@ -242,62 +252,60 @@ export default function App() {
         onKeyPress={!isBookOpen ? (e) => { if (e.key === 'Enter' || e.key === ' ') handleOpenBook(); } : undefined}
       >
         <HTMLFlipBook
-          key={isMobile ? 'mobile-book' : 'desktop-book'} // CRITICAL for responsive re-init
+          key={isMobile ? 'mobile-book' : 'desktop-book'}
           ref={flipBookRef}
-          // Props from your latest code:
-          width={550}
-          height={733}
-          minWidth={isMobile ? 280 : 400}
-          maxWidth={1000}
-          minHeight={isMobile ? 400 : 600}
-          maxHeight={1350}
+          width={isMobile ? 350 : 550}
+          height={isMobile ? 500 : 733}
+          minWidth={isMobile ? 300 : 400}
+          maxWidth={isMobile ? 400 : 1000}
+          minHeight={isMobile ? 450 : 600}
+          maxHeight={isMobile ? 600 : 1350}
           size="stretch"
           maxShadowOpacity={0.5}
           showCover={true}
-          mobileScrollSupport={true} // ESSENTIAL for mobile swipe
+          mobileScrollSupport={true}
           onFlip={handleFlip}
-          onChangeOrientation={() => { // From your code
+          onChangeOrientation={() => {
             setTimeout(() => {
-              if (flipBookRef.current && flipBookRef.current.pageFlip()) { // Added pageFlip() check
+              if (flipBookRef.current && flipBookRef.current.pageFlip()) {
                 console.log("DEBUG: onChangeOrientation. Current lib orientation:", flipBookRef.current.pageFlip().getOrientation());
               }
             }, 100);
           }}
           className="flipbook-instance"
-          swipeDistance={isMobile ? 30 : 50} // Recommended: slightly larger for better detection
-          usePortrait={isMobile} // KEY for single page view on mobile
-          startPage={0} // Always start on cover
-          drawShadow={true}
-          flippingTime={800}
-          useMouseEvents={!isMobile}
-          autoSize={true}
+          swipeDistance={isMobile ? 20 : 50}
+          usePortrait={isMobile}
+          startPage={0}
+          drawShadow={!isMobile}
+          flippingTime={600}
+          useMouseEvents={true}
+          autoSize={false}
           showPageCorners={!isMobile}
-          // On mobile, disable click-to-turn page functionality.
-          // Swiping is primary. Initial "open" tap is handled by `handleOpenBook` on wrapper.
-          >
-         <PageCover
-  className="front-cover"
+          disableFlipByClick={false}
+          clickEventForward={false}
+          style={{
+            touchAction: isMobile ? 'none' : 'auto'
+          }}
+        >
+          <PageCover
+            className="front-cover"
+            backgroundImage="https://ik.imagekit.io/td5ykows9/EOSS-Dossier-Flipbook%20-%20Pages-01.jpg?updatedAt=1748688077556"
+          />
 
-  backgroundImage="https://ik.imagekit.io/td5ykows9/EOSS-Dossier-Flipbook%20-%20Pages-01.jpg?updatedAt=1748688077556"
-/>
+          {pages.map((pageSrc, index) => (
+            <Page key={`page-${index}`} number={index} image={pageSrc}>
+              Exclusive content for Shopper's Stop members - Page {index + 1}
+            </Page>
+          ))}
 
-{pages.map((pageSrc, index) => (
-  <Page key={`page-${index}`} number={index} image={pageSrc}>
-    Exclusive content for Shopper's Stop members - Page {index + 1}
-  </Page>
-))}
-
-<PageCover
-  
-  className="back-cover"
-
-  backgroundImage="https://ik.imagekit.io/td5ykows9/EOSS-Dossier-Flipbook%20-%20BACK-COVER.jpg?updatedAt=1748699999999"
-/>
-
+          <PageCover
+            className="back-cover"
+            backgroundImage="https://ik.imagekit.io/td5ykows9/EOSS-Dossier-Flipbook%20-%20BACK-COVER.jpg?updatedAt=1748699999999"
+          />
         </HTMLFlipBook>
       </div>
 
-      <div className="navigation-controls"> {/* From your code */}
+      <div className="navigation-controls">
         {!isMobile && (
           <button
             onClick={() => flipBookRef.current?.pageFlip().flipPrev()}
@@ -309,7 +317,7 @@ export default function App() {
           </button>
         )}
         <span className="page-indicator">
-          Page {isMobile && currentPage > 0 && currentPage < totalBookPages -1 ? currentPage : currentPage + 1} of {totalBookPages}
+          Page {isMobile && currentPage > 0 && currentPage < totalBookPages - 1 ? currentPage : currentPage + 1} of {totalBookPages}
         </span>
         {!isMobile && (
           <button
@@ -323,14 +331,14 @@ export default function App() {
         )}
       </div>
 
-      {/* Mobile specific hints */}
       {isMobile && !isBookOpen && (
-        <div className="mobile-tap-to-open-hint"> {/* New specific class for styling this hint */}
-         Tap the dossier to open.
+        <div className="mobile-tap-to-open-hint">
+          Tap the dossier to open.
         </div>
       )}
-      {isMobile && isBookOpen && ( // Show swipe/tap hint only when book is open
-         <p className="mobile-tip">👆 Tap or swipe to flip pages</p> // Using your existing mobile-tip class
+
+      {isMobile && isBookOpen && (
+        <p className="mobile-tip">👆 Swipe left/right to flip pages</p>
       )}
 
       {showFinalPopup && <FinalPopup onClose={() => setShowFinalPopup(false)} />}
