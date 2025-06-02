@@ -143,6 +143,20 @@ const Page = React.forwardRef((props, ref) => {
   );
 });
 
+// Move pages array outside the component
+const PAGES = [
+  "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_2.jpg?updatedAt=1748805643144",
+  "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_3.jpg?updatedAt=1748805657984",
+  "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_4.jpg?updatedAt=1748805671083",
+  "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_5.jpg?updatedAt=1748805682498",
+  "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_6.jpg?updatedAt=1748805696285",
+  "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_7.jpg?updatedAt=1748805712737",
+  "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_8.jpg?updatedAt=1748805726903",
+  "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_9.jpg?updatedAt=1748805787753",
+  "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_10.jpg?updatedAt=1748805938947",
+  "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_11.jpg?updatedAt=1748805952057",
+];
+
 export default function Index() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showFinalPopup, setShowFinalPopup] = useState(false);
@@ -151,19 +165,6 @@ export default function Index() {
   const [isBookOpen, setIsBookOpen] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const flipBookRef = useRef();
-
-  const pages = [
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_2.jpg?updatedAt=1748805643144",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_3.jpg?updatedAt=1748805657984",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_4.jpg?updatedAt=1748805671083",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_5.jpg?updatedAt=1748805682498",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_6.jpg?updatedAt=1748805696285",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_7.jpg?updatedAt=1748805712737",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_8.jpg?updatedAt=1748805726903",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_9.jpg?updatedAt=1748805787753",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_10.jpg?updatedAt=1748805938947",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_11.jpg?updatedAt=1748805952057",
-  ];
 
   useEffect(() => {
     const checkMobile = () => {
@@ -191,7 +192,7 @@ export default function Index() {
   // Preload images
   useEffect(() => {
     const preloadImages = async () => {
-      const imagePromises = pages.map((src) => {
+      const imagePromises = PAGES.map((src) => {
         return new Promise((resolve, reject) => {
           const img = new Image();
           img.src = src;
@@ -210,9 +211,9 @@ export default function Index() {
     };
 
     preloadImages();
-  }, [pages]);
+  }, []); // Empty dependency array since PAGES is now stable
 
-  const totalBookPages = pages.length + 1;
+  const totalBookPages = PAGES.length + 1;
   console.log('Total book pages:', totalBookPages);
 
   const handleSuccessfulLogin = () => {
@@ -327,7 +328,7 @@ export default function Index() {
             backgroundImage="https://ik.imagekit.io/td5ykows9/EOSS-Dossier-Flipbook%20-%20Pages-01.jpg?updatedAt=1748688077556"
           />
 
-          {pages.map((pageSrc, index) => (
+          {PAGES.map((pageSrc, index) => (
             <Page key={`page-${index}`} number={index} image={pageSrc}>
               Exclusive content for Shopper's Stop members - Page {index + 1}
             </Page>
