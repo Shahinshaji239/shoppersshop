@@ -152,6 +152,19 @@ export default function Index() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const flipBookRef = useRef();
 
+  const pages = [
+    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_2.jpg?updatedAt=1748805643144",
+    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_3.jpg?updatedAt=1748805657984",
+    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_4.jpg?updatedAt=1748805671083",
+    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_5.jpg?updatedAt=1748805682498",
+    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_6.jpg?updatedAt=1748805696285",
+    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_7.jpg?updatedAt=1748805712737",
+    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_8.jpg?updatedAt=1748805726903",
+    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_9.jpg?updatedAt=1748805787753",
+    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_10.jpg?updatedAt=1748805938947",
+    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_11.jpg?updatedAt=1748805952057",
+  ];
+
   useEffect(() => {
     const checkMobile = () => {
       const mobileState = window.innerWidth <= 768;
@@ -197,20 +210,7 @@ export default function Index() {
     };
 
     preloadImages();
-  }, []);
-
-  const pages = [
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_2.jpg?updatedAt=1748805643144",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_3.jpg?updatedAt=1748805657984",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_4.jpg?updatedAt=1748805671083",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_5.jpg?updatedAt=1748805682498",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_6.jpg?updatedAt=1748805696285",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_7.jpg?updatedAt=1748805712737",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_8.jpg?updatedAt=1748805726903",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_9.jpg?updatedAt=1748805787753",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_10.jpg?updatedAt=1748805938947",
-    "https://ik.imagekit.io/td5ykows9/flipbook/EOSS-Dossier-Flipbook%20-%20Page_11.jpg?updatedAt=1748805952057",
-  ];
+  }, [pages]);
 
   const totalBookPages = pages.length + 1;
   console.log('Total book pages:', totalBookPages);
