@@ -34,16 +34,6 @@ const LoginScreen = ({ onLogin }) => {
           </svg>
         </div>
         <h2 className="login-dialog__title">TYPE PASSWORD</h2>
-        <div className="login-dialog__password-dots">
-          {[0, 1, 2, 3, 4].map((index) => (
-            <div
-              key={index}
-              className={`login-dialog__dot ${password[index] ? "filled" : ""}`}
-            >
-              {password[index] ? "●" : ""}
-            </div>
-          ))}
-        </div>
         <input
           type="password"
           value={password}
@@ -76,29 +66,43 @@ const LoginScreen = ({ onLogin }) => {
 
 // Final Popup Component
 const FinalPopup = ({ onClose }) => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <div className="popup-overlay">
       <div className="popup-dialog">
-        <h2 className="popup-dialog__title">🎉 Your Favorite SALE is Here!</h2>
-        <div className="popup-dialog__sale-banner">
-          <p className="popup-dialog__sale-text">MEGA SALE</p>
-          <p className="popup-dialog__sale-discount">UP TO 70% OFF</p>
-        </div>
-        <p className="popup-dialog__subtext">Explore the Latest Collection</p>
-        <div className="popup-dialog__actions">
-          <button
-            onClick={() => window.open("https://www.shoppersstop.com", "_blank")}
-            className="popup-dialog__button primary"
-            aria-label="Visit sale page"
-          >
-            VISIT NOW
-          </button>
+        <div className="popup-dialog__image-container">
+          <img
+            src={isMobile
+              ? "https://ik.imagekit.io/td5ykows9/flipbook/Modal%20+%20CTA%20-%20mobile.png?updatedAt=1748957733333"
+              : "https://ik.imagekit.io/td5ykows9/flipbook/Modal%20+%20CTA.png?updatedAt=1748955559292"}
+            alt="Sale announcement"
+            className="popup-dialog__image"
+          />
           <button
             onClick={onClose}
-            className="popup-dialog__button secondary"
+            className="popup-dialog__close-button"
             aria-label="Close popup"
+            type="button"
           >
-            Close
+            ×
+          </button>
+          <button
+            onClick={() => window.open('https://www.shoppersstop.com', '_blank')}
+            className="popup-dialog__button primary"
+            aria-label="Visit sale page"
+            type="button"
+          >
+            DISCOVER ALL DEALS
           </button>
         </div>
       </div>
@@ -213,7 +217,7 @@ export default function Index() {
     preloadImages();
   }, []); // Empty dependency array since PAGES is now stable
 
-  const totalBookPages = PAGES.length + 1;
+  const totalBookPages = PAGES.length + 2; // Front cover + Pages + Back cover
   console.log('Total book pages:', totalBookPages);
 
   const handleSuccessfulLogin = () => {
@@ -236,21 +240,20 @@ export default function Index() {
   const handleFlip = (e) => {
     const newPage = e.data;
     setCurrentPage(newPage);
-  
+
     if (newPage > 0 && !isBookOpen) {
       setIsBookOpen(true);
     }
 
-    // Show modal after back cover
-   // Trigger modal when last visible page (back cover) is reached
-  if (newPage >= totalBookPages - 2) {
-    // Only show once
-    if (!showFinalPopup) {
-      console.log('Reached back cover, showing modal');
-      setTimeout(() => setShowFinalPopup(true), 500); // Shorter delay for better UX
+    const lastPageIndex = flipBookRef.current?.pageFlip()?.getPageCount() - 1;
+
+    if (newPage === lastPageIndex) {
+      if (!showFinalPopup) {
+        console.log('Reached back cover, showing modal');
+        setTimeout(() => setShowFinalPopup(true), 500);
+      }
     }
-  }
-};
+  };
 
   const handleOpenBook = () => {
     if (!isBookOpen && flipBookRef.current && flipBookRef.current.pageFlip()) {
@@ -353,7 +356,7 @@ export default function Index() {
           </button>
         )}
         <span className="page-indicator">
-          Page {isMobile && currentPage > 0 && currentPage < totalBookPages - 1 ? currentPage : currentPage + 1} of {totalBookPages}
+          Page {currentPage + 1} of {totalBookPages}
         </span>
         {!isMobile && (
           <button
