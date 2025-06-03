@@ -709,13 +709,9 @@ body {
   .popup-dialog__image {
     max-height: 85vh;
   }
-  
-  .popup-dialog__button.primary {
-  }
-  
-  .popup-dialog__close-button {
-  }
 }
+
+
 
 @media (orientation: landscape) and (max-height: 500px) {
   .popup-dialog {
